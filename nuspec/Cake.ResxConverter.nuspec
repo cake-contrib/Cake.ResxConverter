@@ -4,10 +4,10 @@
     <id>Cake.ResxConverter</id>
     <version>$version$</version>
     <title>Cake.ResxConverter</title>
-    <iconUrl>https://github.com/jzeferino/ResxConverter/blob/master/art/icon.png?raw=true</iconUrl>
+    <iconUrl>https://github.com/jzeferino/Cake.ResxConverter/blob/master/art/icon.png?raw=true</iconUrl>
     <authors>jzeferino, Luís Gonçalves</authors>
-    <licenseUrl>https://github.com/jzeferino/ResxConverter/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/jzeferino/ResxConverter</projectUrl>
+    <licenseUrl>https://github.com/jzeferino/Cake.ResxConverter/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jzeferino/Cake.ResxConverter</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Cake.ResxConverter allows the use of ResxConverter via Cake script.</description>    
     <tags>resx, convert, xamarin, net, cake</tags>
