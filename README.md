@@ -1,7 +1,7 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/ig9llpalkl1hynxh?svg=true
+[![Build status](https://ci.appveyor.com/api/projects/status/05yua0ol0wwu0jo9?svg=true
 )](https://ci.appveyor.com/project/jzeferino/cake-resxconverter/)   
 
-ResxConverter
+Cake.ResxConverter
 ===================
 
 <p align="center">
