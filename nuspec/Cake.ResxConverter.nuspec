@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Cake.ResxConverter</id>
+    <version>$version$</version>
+    <title>Cake.ResxConverter</title>
+    <iconUrl>https://github.com/jzeferino/ResxConverter/blob/master/art/icon.png?raw=true</iconUrl>
+    <authors>jzeferino, Luís Gonçalves</authors>
+    <licenseUrl>https://github.com/jzeferino/ResxConverter/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jzeferino/ResxConverter</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Cake.ResxConverter allows the use of ResxConverter via Cake script.</description>    
+    <tags>resx, convert, xamarin, net, cake</tags>
+  </metadata>
+  <files>
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.dll" target="lib/net45" />
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.xml" target="lib/net45" />
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.dll" target="lib/net45" />
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.xml" target="lib/net45" />
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.dll" target="lib/net45" />
+    <file src="src/Cake.ResxConverter/bin/Release/Cake.ResxConverter.xml" target="lib/net45" />
+  </files>
+</package>
