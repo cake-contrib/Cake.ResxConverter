@@ -33,14 +33,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Cake.Core">
-      <HintPath>..\..\packages\Cake.Core.0.19.3\lib\net45\Cake.Core.dll</HintPath>
+    <Reference Include="ResxConverter.Core">
+      <HintPath>..\..\packages\ResxConverter.Core.1.0.1\lib\net45\ResxConverter.Core.dll</HintPath>
     </Reference>
     <Reference Include="ResxConverter.Mobile">
-      <HintPath>..\..\packages\ResxConverter.Mobile.1.0.0\lib\net45\ResxConverter.Mobile.dll</HintPath>
+      <HintPath>..\..\packages\ResxConverter.Mobile.1.0.1\lib\net45\ResxConverter.Mobile.dll</HintPath>
     </Reference>
-    <Reference Include="ResxConverter.Core">
-      <HintPath>..\..\packages\ResxConverter.Core.1.0.0\lib\net45\ResxConverter.Core.dll</HintPath>
+    <Reference Include="Cake.Core">
+      <HintPath>..\..\packages\Cake.Core.0.19.4\lib\net45\Cake.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
