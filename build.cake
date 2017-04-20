@@ -100,13 +100,9 @@ Task ("NuGet")
  	.WithCriteria(isRunningOnAppVeyor)
 	.Does (() =>
 {
-  if(AppVeyor.Environment.Repository.Branch == "develop")
-  {
-    version = version.Change(prerelease: "pre" + AppVeyor.Environment.Build.Number);
-  }
+  AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version.ToString(), AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
 
-  var nugetVersion = version.ToString();
-  AppVeyor.UpdateBuildVersion(nugetVersion);
+  var nugetVersion = AppVeyor.Environment.Repository.Branch == "master" ? version.ToString() : version.Change(prerelease: "pre" + AppVeyor.Environment.Build.Number).ToString();
 
   Package("./nuspec/Cake.ResxConverter.nuspec", nugetVersion);
 
