@@ -1,16 +1,26 @@
-version: 'build{build}'
-branches:
-  only:
-  - develop
-  - master
+#---------------------------------#
+#  Build Script                   #
+#---------------------------------#
 build_script:
-- ps: .\build.ps1
+  - ps: .\build.ps1 -Target AppVeyor
 
+# Tests
 test: off
 
-artifacts:
-- path: ./artifacts/*.nupkg
+#---------------------------------#
+#        Branches to build        #
+#---------------------------------#
+branches:
+  # Whitelist
+  only:
+    - develop
+    - master
+    - /release/.*/
+    - /hotfix/.*/
 
+#---------------------------------#
+#  Build Cache                    #
+#---------------------------------#
 cache:
-- tools -> build.cake, tools\packages.config # Cache \tools until build.cake and/or packages.config change
-- packages -> **\packages.config
+- src\packages -> src\**\packages.config
+- tools -> setup.cake
