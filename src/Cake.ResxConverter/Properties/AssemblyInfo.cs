@@ -6,8 +6,5 @@
 [assembly: AssemblyTitle("Cake.ResxConverter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("jzeferino")]
-[assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("jzeferino - 2017")]
 [assembly: AssemblyTrademark("jzeferino")]
 [assembly: AssemblyCulture("")]
