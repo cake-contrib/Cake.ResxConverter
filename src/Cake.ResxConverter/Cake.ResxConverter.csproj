@@ -34,20 +34,20 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="ResxConverter.Core">
-      <HintPath>..\..\packages\ResxConverter.Core.1.0.1\lib\net45\ResxConverter.Core.dll</HintPath>
+      <HintPath>..\packages\ResxConverter.Core.1.0.1\lib\net45\ResxConverter.Core.dll</HintPath>
     </Reference>
     <Reference Include="ResxConverter.Mobile">
-      <HintPath>..\..\packages\ResxConverter.Mobile.1.0.1\lib\net45\ResxConverter.Mobile.dll</HintPath>
+      <HintPath>..\packages\ResxConverter.Mobile.1.0.1\lib\net45\ResxConverter.Mobile.dll</HintPath>
     </Reference>
     <Reference Include="Cake.Core">
-      <HintPath>..\..\packages\Cake.Core.0.19.4\lib\net45\Cake.Core.dll</HintPath>
+      <HintPath>..\packages\Cake.Core.0.19.4\lib\net45\Cake.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResxConverterAliases.cs" />
     <Compile Include="ResxConverterProvider.cs" />
   </ItemGroup>
