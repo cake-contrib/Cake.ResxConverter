@@ -27,6 +27,9 @@ Task("Run")
   ResxConverter.ConvertToiOS(resxFolder, "artifacts/generated/ios");
 });
 ```
+### Sample
+
+Consult a full sample of Cake.ResxConverter [here](https://github.com/jzeferino/Xamarin.ResxConverter.Sample).
 
 ### License
 [MIT Licence](LICENSE) 
