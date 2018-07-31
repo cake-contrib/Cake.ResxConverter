@@ -10,10 +10,11 @@ var solutionFile = File("Cake.ResxConverter.sln");
 var artifactsDirectory = Directory("artifacts");
 
 // Versioning
-var nugetVersionSuffix = "local" + DateTime.Now.Ticks;
+var version = "1.0.2";
+var versionSuffix = "local" + DateTime.Now.Ticks;
 
 // Misc
-var msBuildHideLogoSettings = new DotNetCoreMSBuildSettings().HideLogo();
+Func<DotNetCoreMSBuildSettings> msBuildHideLogoSettings = () => new DotNetCoreMSBuildSettings().HideLogo();
 
 Setup(context =>
 {
@@ -29,7 +30,7 @@ Task("Clean")
   DotNetCoreClean(solutionFile, new DotNetCoreCleanSettings {
     Configuration = configuration,
     Verbosity = DotNetCoreVerbosity.Minimal,
-    MSBuildSettings = msBuildHideLogoSettings
+    MSBuildSettings = msBuildHideLogoSettings()
   });
 });
 
@@ -43,13 +44,9 @@ Task("Update-Version")
   .WithCriteria(isRunningOnAppVeyor)
   .Does(() => 
   {
-    // TODO decide if we really want/need to have this. If so, it means that we'd need to either:
-    //      1) Read the version from the .csproj
-    //      2) Manage assembly version / file version from this script (as MSBuild props)
-    //
-    // AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version.ToString(), AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
+    AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version, AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
 
-    nugetVersionSuffix = AppVeyor.Environment.Repository.Branch == "master"
+    versionSuffix = AppVeyor.Environment.Repository.Branch == "master"
       ? string.Empty
       : "pre" + AppVeyor.Environment.Build.Number;
   });
@@ -65,7 +62,7 @@ Task("Build")
       Configuration = configuration,
       NoRestore = true,
       Verbosity = DotNetCoreVerbosity.Minimal,
-      MSBuildSettings = msBuildHideLogoSettings
+      MSBuildSettings = msBuildHideLogoSettings().SetVersion(version)
     };
 
     DotNetCoreBuild(solutionFile, setings);
@@ -77,13 +74,13 @@ Task ("NuGet")
   {
     var settings = new DotNetCorePackSettings
     {
-        VersionSuffix = nugetVersionSuffix, // Package and assembly versions are set on .csproj
-        Configuration = configuration,
-        OutputDirectory = artifactsDirectory,
-        NoBuild = true,
-        NoRestore = true,
-        Verbosity = DotNetCoreVerbosity.Minimal,
-        MSBuildSettings = msBuildHideLogoSettings
+      VersionSuffix = versionSuffix,
+      Configuration = configuration,
+      OutputDirectory = artifactsDirectory,
+      NoBuild = true,
+      NoRestore = true,
+      Verbosity = DotNetCoreVerbosity.Minimal,
+      MSBuildSettings = msBuildHideLogoSettings().SetVersionPrefix(version) // Use this method to avoid overriding the suffix
     };
 
     DotNetCorePack("src/Cake.ResxConverter/Cake.ResxConverter.csproj", settings);
