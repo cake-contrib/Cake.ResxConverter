@@ -1,43 +1,27 @@
-#addin Cake.SemVer
+#addin nuget:?package=Cake.SemVer&version=3.0.0&loaddependencies=true
 
-#tool "xunit.runner.console&version=2.2.0"
-
-// Enviroment
-var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
-
-// Arguments.
+// Arguments
 var target = Argument("target", "Default");
 var configuration = "Release";
 
-// Define directories.
-var solutionFile = new FilePath("Cake.ResxConverter.sln");
-var artifactsDirectory = new DirectoryPath("artifacts");
+// Environment
+var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 
-// Tests.
-var testsDllPath = string.Format("./test/**/bin/{0}/*.Tests.dll", configuration);
+// Define directories
+var solutionFile = File("Cake.ResxConverter.sln");
+var artifactsDirectory = Directory("artifacts");
 
-// Versioning. Used for all the packages and assemblies for now.
+// Versioning
 var version = CreateSemVer(1, 0, 2);
+var nugetVersion = version.Change(prerelease: "local" + DateTime.Now.Ticks);
 
-// Reusable Packaging
-Action<string, string> Package = (nuspec, nugetVersion) =>
-{
-    NuGetPack (nuspec, 
-    new NuGetPackSettings 
-      { 
-        Version = nugetVersion,
-        Verbosity = NuGetVerbosity.Normal,
-        OutputDirectory = artifactsDirectory,
-        BasePath = "./",
-        ArgumentCustomization = args => args.Append("-NoDefaultExcludes")		
-      });	
-};
+// Misc
+Func<DotNetCoreMSBuildSettings> msBuildHideLogoSettings = () => new DotNetCoreMSBuildSettings().HideLogo();
 
 Setup(context =>
 {
 	Information("AppVeyor: {0}", isRunningOnAppVeyor);
 	Information("Configuration: {0}", configuration);
-  Information("Version: {0}", version);
 });
 
 Task("Clean")
@@ -45,68 +29,63 @@ Task("Clean")
 {	
   CleanDirectory(artifactsDirectory);
 
-  DotNetBuild(solutionFile, settings => settings
-      .SetConfiguration(configuration)
-      .WithTarget("Clean")
-      .SetVerbosity(Verbosity.Minimal));
+  DotNetCoreClean(solutionFile, new DotNetCoreCleanSettings {
+    Configuration = configuration,
+    Verbosity = DotNetCoreVerbosity.Minimal,
+    MSBuildSettings = msBuildHideLogoSettings()
+  });
 });
 
 Task("Restore")
 	.Does(() => 
 {
-  NuGetRestore(solutionFile);
+  DotNetCoreRestore(solutionFile);
 });
 
-Task("Patch-AssemblyInfo")
-	.WithCriteria(isRunningOnAppVeyor)
-	.Does(() =>
-{
-  CreateAssemblyInfo("./CommonAssemblyInfo.cs", new AssemblyInfoSettings
+Task("Update-Version")
+  .WithCriteria(isRunningOnAppVeyor)
+  .Does(() => 
   {
-    // Keep only the major and minor for assembly versions
-    Version = version.Change(patch: 0).ToString()
+    AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version, AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
+
+    nugetVersion = AppVeyor.Environment.Repository.Branch == "master"
+      ? version
+      : version.Change(prerelease: "pre" + AppVeyor.Environment.Build.Number);
   });
-});
 
 Task("Build")
 	.IsDependentOn("Clean")
 	.IsDependentOn("Restore")
-    .IsDependentOn("Patch-AssemblyInfo")
+  .IsDependentOn("Update-Version")
 	.Does(() =>  
-{	
-  DotNetBuild(solutionFile, settings => settings
-        .SetConfiguration(configuration)
-        .WithTarget("Build")
-        .SetVerbosity(Verbosity.Minimal));
-});
-
-Task("Run-Tests")
-  .IsDependentOn("Build")
-  .Does(() =>
-{
-  foreach(var testDll in GetFiles(testsDllPath))
   {
-    XUnit2(testDll.FullPath, 
-      new XUnit2Settings 
-      {
-        XmlReport = true,
-        OutputDirectory = artifactsDirectory
-      });
-  }
-});
+    var setings = new DotNetCoreBuildSettings
+    {
+      Configuration = configuration,
+      NoRestore = true,
+      Verbosity = DotNetCoreVerbosity.Minimal,
+      MSBuildSettings = msBuildHideLogoSettings().SetVersion(version.ToString())
+    };
+
+    DotNetCoreBuild(solutionFile, setings);
+  });
 
 Task ("NuGet")
-	.IsDependentOn ("Run-Tests")
- 	.WithCriteria(isRunningOnAppVeyor)
+	.IsDependentOn("Build")
 	.Does (() =>
-{
-  AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version.ToString(), AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
+  {
+    var settings = new DotNetCorePackSettings
+    {
+      Configuration = configuration,
+      OutputDirectory = artifactsDirectory,
+      NoBuild = true,
+      NoRestore = true,
+      Verbosity = DotNetCoreVerbosity.Minimal,
+      MSBuildSettings = msBuildHideLogoSettings().SetVersionPrefix(nugetVersion.ToString())
+    };
 
-  var nugetVersion = AppVeyor.Environment.Repository.Branch == "master" ? version.ToString() : version.Change(prerelease: "pre" + AppVeyor.Environment.Build.Number).ToString();
-
-  Package("./nuspec/Cake.ResxConverter.nuspec", nugetVersion);
-
-});
+    DotNetCorePack("src/Cake.ResxConverter/Cake.ResxConverter.csproj", settings);
+  });
 
 Task("Default")
 	.IsDependentOn("NuGet");
