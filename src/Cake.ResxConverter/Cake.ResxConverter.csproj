@@ -12,8 +12,6 @@
     <PackageLicenseUrl>https://github.com/cake-contrib/Cake.ResxConverter/blob/master/LICENSE</PackageLicenseUrl>
     <PackageIconUrl>https://github.com/cake-contrib/Cake.ResxConverter/blob/master/art/icon.png?raw=true</PackageIconUrl>
     <PackageProjectUrl>https://github.com/cake-contrib/Cake.ResxConverter</PackageProjectUrl>
-    <!-- Assembly/package versioning is done by Cake - Do NOT set 'Version' here as it has precedence over prefix/suffix -->
-    <VersionPrefix>$(VersionPrefix)</VersionPrefix>
   </PropertyGroup>
 
   <ItemGroup>

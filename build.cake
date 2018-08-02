@@ -1,8 +1,10 @@
+#addin nuget:?package=Cake.SemVer&version=3.0.0&loaddependencies=true
+
 // Arguments
 var target = Argument("target", "Default");
 var configuration = "Release";
 
-// Enviroment
+// Environment
 var isRunningOnAppVeyor = AppVeyor.IsRunningOnAppVeyor;
 
 // Define directories
@@ -10,8 +12,8 @@ var solutionFile = File("Cake.ResxConverter.sln");
 var artifactsDirectory = Directory("artifacts");
 
 // Versioning
-var version = "1.0.2";
-var versionSuffix = "local" + DateTime.Now.Ticks;
+var version = CreateSemVer(1, 0, 2);
+var nugetVersion = version.Change(prerelease: "local" + DateTime.Now.Ticks);
 
 // Misc
 Func<DotNetCoreMSBuildSettings> msBuildHideLogoSettings = () => new DotNetCoreMSBuildSettings().HideLogo();
@@ -46,9 +48,9 @@ Task("Update-Version")
   {
     AppVeyor.UpdateBuildVersion(string.Format("{0}-{1}-build{2}", version, AppVeyor.Environment.Repository.Branch, AppVeyor.Environment.Build.Number));
 
-    versionSuffix = AppVeyor.Environment.Repository.Branch == "master"
-      ? string.Empty
-      : "pre" + AppVeyor.Environment.Build.Number;
+    nugetVersion = AppVeyor.Environment.Repository.Branch == "master"
+      ? version
+      : version.Change(prerelease: "pre" + AppVeyor.Environment.Build.Number);
   });
 
 Task("Build")
@@ -62,7 +64,7 @@ Task("Build")
       Configuration = configuration,
       NoRestore = true,
       Verbosity = DotNetCoreVerbosity.Minimal,
-      MSBuildSettings = msBuildHideLogoSettings().SetVersion(version)
+      MSBuildSettings = msBuildHideLogoSettings().SetVersion(version.ToString())
     };
 
     DotNetCoreBuild(solutionFile, setings);
@@ -74,13 +76,12 @@ Task ("NuGet")
   {
     var settings = new DotNetCorePackSettings
     {
-      VersionSuffix = versionSuffix,
       Configuration = configuration,
       OutputDirectory = artifactsDirectory,
       NoBuild = true,
       NoRestore = true,
       Verbosity = DotNetCoreVerbosity.Minimal,
-      MSBuildSettings = msBuildHideLogoSettings().SetVersionPrefix(version) // Use this method to avoid overriding the suffix
+      MSBuildSettings = msBuildHideLogoSettings().SetVersionPrefix(nugetVersion.ToString())
     };
 
     DotNetCorePack("src/Cake.ResxConverter/Cake.ResxConverter.csproj", settings);
