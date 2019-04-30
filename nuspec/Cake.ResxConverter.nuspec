@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>Cake.ResxConverter</id>
     <version>$version$</version>
     <title>Cake.ResxConverter</title>
-    <iconUrl>https://github.com/jzeferino/Cake.ResxConverter/blob/master/art/icon.png?raw=true</iconUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/cake-contrib/graphics/png/cake-contrib-medium.png</iconUrl>
     <authors>jzeferino, Luís Gonçalves</authors>
     <licenseUrl>https://github.com/jzeferino/Cake.ResxConverter/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/jzeferino/Cake.ResxConverter</projectUrl>
